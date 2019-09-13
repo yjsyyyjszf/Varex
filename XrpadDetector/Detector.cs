@@ -27,15 +27,18 @@ namespace XrpadDetector
             {
                 var errorCode = Acquisition_GbIF_GetDeviceCnt(out int deviceCount);
                 CheckError(errorCode);
-                var deviceParams = new GBIF_DEVICE_PARAM[deviceCount];
-                errorCode = Acquisition_GbIF_GetDeviceList(deviceParams, deviceCount);
-                CheckError(errorCode);
-                return deviceParams.Select(deviceParam => deviceParam.ToInfo());
+                if (deviceCount > 0)
+                {
+                    var deviceParams = new GBIF_DEVICE_PARAM[deviceCount];
+                    errorCode = Acquisition_GbIF_GetDeviceList(deviceParams, deviceCount);
+                    CheckError(errorCode);
+                    return deviceParams.Select(deviceParam => deviceParam.ToInfo());
+                }
             }
             catch
             {
-                return Enumerable.Empty<DetectorInfo>();
             }
+            return Enumerable.Empty<DetectorInfo>();
         }
 
         public Detector(string name)

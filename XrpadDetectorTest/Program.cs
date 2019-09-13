@@ -9,16 +9,22 @@ namespace XrpadDetectorTest
         static void Main()
         {
             var info = Detector.GetInfos().FirstOrDefault();
-            if (info == null)
+            if (info != null)
             {
                 Console.WriteLine($"Found detector {info.Name} on {info.IP}");
+                TestDetector(info);
             }
             else
             {
                 Console.WriteLine("Detector not found");
-                return;
             }
 
+            Console.WriteLine("Press any key...");
+            Console.ReadLine();
+        }
+
+        private static void TestDetector(DetectorInfo info)
+        {
             using (var detector = new Detector(info.Name))
             {
                 detector.Acquired += Detector_Acquired;
@@ -29,9 +35,6 @@ namespace XrpadDetectorTest
                 detector.StartGainCalibration(5);
                 detector.StartAcquisition(5);
             }
-
-            Console.WriteLine("Press any key...");
-            Console.ReadLine();
         }
 
         private static void Detector_Acquired(object sender, EventArgs e)
