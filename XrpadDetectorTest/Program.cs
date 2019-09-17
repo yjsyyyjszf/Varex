@@ -32,8 +32,11 @@ namespace XrpadDetectorTest
                 detector.SetAedMode(false);
                 detector.SetAcquisitionTime(5000);
                 detector.StartOffsetCalibration(3);
+                Console.ReadLine();
                 detector.StartGainCalibration(5);
+                Console.ReadLine();
                 detector.StartAcquisition(5);
+                Console.ReadLine();
             }
         }
 
