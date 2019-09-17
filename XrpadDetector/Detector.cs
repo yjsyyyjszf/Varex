@@ -82,6 +82,7 @@ namespace XrpadDetector
                 Marshal.GetFunctionPointerForDelegate(m_EndAcqCallback));
             CheckError(errorCode);
 
+            errorCode = Acquisition_SetIdleTimeout(m_AcqDesc, ushort.MaxValue);
             errorCode = Acquisition_SetCameraTriggerMode(m_AcqDesc, 3);
             CheckError(errorCode);
 
@@ -289,6 +290,9 @@ namespace XrpadDetector
 
         [DllImport("XISL.dll")]
         private extern static int Acquisition_SetCallbacksAndMessages(IntPtr acqDesc, IntPtr hwnd, int errorMsg, int loosingFramesMsg, IntPtr endFrameCallback, IntPtr endAcqCallback);
+
+        [DllImport("XISL.dll")]
+        private extern static int Acquisition_SetIdleTimeout(IntPtr acqDesc, ushort timeout);
 
         [DllImport("XISL.dll")]
         private extern static int Acquisition_SetCameraTriggerMode(IntPtr acqDesc, int mode);
