@@ -173,7 +173,7 @@ namespace XrpadDetector
             }
         }
 
-        private Task LoopFramesAsync(int frameCount) => new Task(() => LoopFrames(frameCount));
+        private Task LoopFramesAsync(int frameCount) => Task.Run(() => LoopFrames(frameCount));
 
         public void LoadOffsetMap(string filePath)
         {
