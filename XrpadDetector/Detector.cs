@@ -135,7 +135,7 @@ namespace XrpadDetector
             m_AcquisitionTime = ms;
         }
 
-        public async void StartAcquisition(int frameCount)
+        public async Task StartAcquisition(int frameCount)
         {
             var errorCode = Acquisition_Acquire_Image(m_AcqDesc, frameCount, 0, HIS_SEQ_AVERAGE, m_OffsetMap, m_GainMap, m_PixelMap);
             CheckError(errorCode);
@@ -144,7 +144,7 @@ namespace XrpadDetector
             ImageReady?.Invoke(this, new ImageEventArgs(m_ImageData, m_ImageWidth, m_ImageHeight, m_ImagePitch));
         }
 
-        public async void StartOffsetCalibration(int frameCount)
+        public async Task StartOffsetCalibration(int frameCount)
         {
             ClearOffsetMap();
             m_OffsetMap = new UnmanagedBuffer(m_ImageWidth * m_ImageHeight * 2);
@@ -154,7 +154,7 @@ namespace XrpadDetector
             await LoopFramesAsync(frameCount);
         }
 
-        public async void StartGainCalibration(int frameCount)
+        public async Task StartGainCalibration(int frameCount)
         {
             ClearGainMap();
             m_GainMap = new UnmanagedBuffer(m_ImageWidth * m_ImageHeight * 4);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using XrpadDetector;
 
 namespace XrpadDetectorTest
@@ -12,7 +13,7 @@ namespace XrpadDetectorTest
             if (info != null)
             {
                 Console.WriteLine($"Found detector {info.Name} on {info.IP}");
-                TestDetector(info);
+                TestDetector(info).Wait();
             }
             else
             {
@@ -23,7 +24,7 @@ namespace XrpadDetectorTest
             Console.ReadLine();
         }
 
-        private static void TestDetector(DetectorInfo info)
+        private static async Task TestDetector(DetectorInfo info)
         {
             using (var detector = new Detector(info.Name))
             {
@@ -31,12 +32,9 @@ namespace XrpadDetectorTest
                 detector.ImageReady += Detector_ImageReady;
                 detector.SetAedMode(false);
                 detector.SetAcquisitionTime(5000);
-                detector.StartOffsetCalibration(3);
-                Console.ReadLine();
-                detector.StartGainCalibration(5);
-                Console.ReadLine();
-                detector.StartAcquisition(5);
-                Console.ReadLine();
+                await detector.StartOffsetCalibration(3);
+                await detector.StartGainCalibration(5);
+                await detector.StartAcquisition(5);
             }
         }
 
