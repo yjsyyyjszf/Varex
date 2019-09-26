@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -15,7 +16,8 @@ namespace XrpadDetector
             CheckError(errorCode);
             errorCode = Acquisition_SetLogLevel(XislLoggingLevels.LEVEL_WARN);
             CheckError(errorCode);
-            errorCode = Acquisition_SetFileLogging($"Log-{DateTime.Today:yyyyMMdd}.txt", true);
+            var logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{DateTime.Today:yyyyMMdd}.log");
+            errorCode = Acquisition_SetFileLogging(logFilePath, true);
             CheckError(errorCode);
         }
 
