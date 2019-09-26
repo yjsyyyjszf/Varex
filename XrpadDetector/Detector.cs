@@ -133,35 +133,36 @@ namespace XrpadDetector
             m_AcquisitionTime = ms;
         }
 
-        public async Task StartAcquisition(int frameCount)
+        public Task StartAcquisition(int frameCount)
         {
             var errorCode = Acquisition_DefineDestBuffers(m_AcqDesc, m_ImageData, frameCount, m_ImageHeight, m_ImageWidth);
             CheckError(errorCode);
             errorCode = Acquisition_Acquire_Image(m_AcqDesc, frameCount, 0, HIS_SEQ_AVERAGE, m_OffsetMap, m_GainMap, m_PixelMap);
             CheckError(errorCode);
-            await LoopFramesAsync(frameCount);
+            var task = LoopFramesAsync(frameCount);
 
-            ImageReady?.Invoke(this, new ImageEventArgs(m_ImageData, m_ImageWidth, m_ImageHeight, m_ImagePitch));
+            task.ContinueWith((_) => ImageReady?.Invoke(this, new ImageEventArgs(m_ImageData, m_ImageWidth, m_ImageHeight, m_ImagePitch)));
+            return task;
         }
 
-        public async Task StartOffsetCalibration(int frameCount)
+        public Task StartOffsetCalibration(int frameCount)
         {
             ClearOffsetMap();
             m_OffsetMap = new UnmanagedBuffer(m_ImageWidth * m_ImageHeight * 2);
 
             var errorCode = Acquisition_Acquire_OffsetImage(m_AcqDesc, m_OffsetMap, m_ImageHeight, m_ImageWidth, frameCount);
             CheckError(errorCode);
-            await LoopFramesAsync(frameCount);
+            return LoopFramesAsync(frameCount);
         }
 
-        public async Task StartGainCalibration(int frameCount)
+        public Task StartGainCalibration(int frameCount)
         {
             ClearGainMap();
             m_GainMap = new UnmanagedBuffer(m_ImageWidth * m_ImageHeight * 4);
 
             var errorCode = Acquisition_Acquire_GainImage(m_AcqDesc, m_OffsetMap, m_GainMap, m_ImageHeight, m_ImageWidth, frameCount);
             CheckError(errorCode);
-            await LoopFramesAsync(frameCount);
+            return LoopFramesAsync(frameCount);
         }
 
         private void LoopFrames(int frameCount)
@@ -174,7 +175,7 @@ namespace XrpadDetector
             }
         }
 
-        private Task LoopFramesAsync(int frameCount) => Task.Run(() => LoopFrames(frameCount));
+        private Task LoopFramesAsync(int frameCount) => Task.Factory.StartNew(() => LoopFrames(frameCount));
 
         public void LoadOffsetMap(string filePath)
         {
