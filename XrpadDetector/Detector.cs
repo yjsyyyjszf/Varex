@@ -13,11 +13,9 @@ namespace XrpadDetector
         {
             var errorCode = Acquisition_EnableLogging(true);
             CheckError(errorCode);
+            errorCode = Acquisition_SetLogLevel(XislLoggingLevels.LEVEL_WARN);
+            CheckError(errorCode);
             errorCode = Acquisition_SetFileLogging($"Log-{DateTime.Today:yyyyMMdd}.txt", true);
-            CheckError(errorCode);
-            errorCode = Acquisition_SetLogLevel(XislLoggingLevels.LEVEL_INFO);
-            CheckError(errorCode);
-            errorCode = Acquisition_TogglePerformanceLogging(true);
             CheckError(errorCode);
         }
 
