@@ -32,9 +32,13 @@ namespace XrpadDetectorTest
                 detector.ImageReady += Detector_ImageReady;
                 detector.SetAedMode(false);
                 detector.SetAcquisitionTime(5000);
+
                 await detector.StartOffsetCalibration(3);
                 await detector.StartGainCalibration(5);
                 await detector.StartAcquisition(5);
+
+                var batteryStatus = detector.GetBatteryStatus(out int batteryGauge);
+                Console.WriteLine($"Battery status: {batteryStatus} ({batteryGauge}%)");
             }
         }
 

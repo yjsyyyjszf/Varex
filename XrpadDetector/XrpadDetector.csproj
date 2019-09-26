@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Detector.cs" />
+    <Compile Include="DetectorBatteryStatus.cs" />
     <Compile Include="DetectorInfo.cs" />
     <Compile Include="ImageEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

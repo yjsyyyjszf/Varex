@@ -246,6 +246,31 @@ namespace XrpadDetector
             Acquired?.Invoke(this, EventArgs.Empty);
         }
 
+        public DetectorBatteryStatus GetBatteryStatus(out int batteryGauge)
+        {
+            using (var cameraRegisters = new UnmanagedBuffer(500))
+            {
+                var errorCode = Acquisition_wpe_ReadCameraRegisters(Info.IP, cameraRegisters);
+                CheckError(errorCode);
+
+                batteryGauge = 0;
+                var batteryInfo = (DETECTOR_BATTERY)Marshal.PtrToStructure((IntPtr)cameraRegisters + 31 * 4, typeof(DETECTOR_BATTERY));
+                if (batteryInfo.SerialNo != 0)
+                {
+                    if ((batteryInfo.Status & 0x01) != 0)
+                    {
+                        batteryGauge = batteryInfo.Capacity;
+                        return (batteryInfo.Status & 0x02) != 0 ? DetectorBatteryStatus.Charging : DetectorBatteryStatus.Discharging;
+                    }
+                    else
+                    {
+                        return DetectorBatteryStatus.NotInstalled;
+                    }
+                }
+                return DetectorBatteryStatus.Disconnected;
+            }
+        }
+
         private static void CheckError(int errorCode)
         {
             if (errorCode != 0)
@@ -321,6 +346,9 @@ namespace XrpadDetector
         [DllImport("XISL.dll")]
         private extern static int Acquisition_Acquire_GainImage(IntPtr acqDesc, IntPtr offsetData, IntPtr gainData, int rows, int columns, int frames);
 
+        [DllImport("XISL.dll")]
+        private extern static int Acquisition_wpe_ReadCameraRegisters([MarshalAs(UnmanagedType.LPStr)] string address, IntPtr buffer);
+
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
         struct GBIF_DEVICE_PARAM
         {
@@ -376,6 +404,20 @@ namespace XrpadDetector
             LEVEL_FATAL,
             LEVEL_ALL,
             LEVEL_NONE
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        struct DETECTOR_BATTERY
+        {
+            public int Status;
+            public int SerialNo;
+            public int CycleCount;
+            public int Temperature;
+            public int Voltage;
+            public int Current;
+            public int Capacity;
+            public int Energy;
+            public int Charge;
         }
 
         #endregion
