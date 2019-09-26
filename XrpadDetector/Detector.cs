@@ -141,7 +141,7 @@ namespace XrpadDetector
             CheckError(errorCode);
             var task = LoopFramesAsync(frameCount);
 
-            task.ContinueWith((_) => ImageReady?.Invoke(this, new ImageEventArgs(m_ImageData, m_ImageWidth, m_ImageHeight, m_ImagePitch)));
+            task = task.ContinueWith((_) => ImageReady?.Invoke(this, new ImageEventArgs(m_ImageData, m_ImageWidth, m_ImageHeight, m_ImagePitch)));
             return task;
         }
 
