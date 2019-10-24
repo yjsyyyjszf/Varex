@@ -35,7 +35,7 @@ namespace XrpadDetectorTest
 
                 await detector.StartOffsetCalibration(3);
                 await detector.StartGainCalibration(5);
-                await detector.StartAcquisition(5);
+                await detector.StartAcquisition();
 
                 var batteryStatus = detector.GetBatteryStatus(out int batteryGauge);
                 Console.WriteLine($"Battery status: {batteryStatus} ({batteryGauge}%)");

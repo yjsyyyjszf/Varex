@@ -133,13 +133,13 @@ namespace XrpadDetector
             m_AcquisitionTime = ms;
         }
 
-        public async Task StartAcquisition(int frameCount)
+        public async Task StartAcquisition()
         {
-            var errorCode = Acquisition_DefineDestBuffers(m_AcqDesc, m_ImageData, frameCount, m_ImageHeight, m_ImageWidth);
+            var errorCode = Acquisition_DefineDestBuffers(m_AcqDesc, m_ImageData, 1, m_ImageHeight, m_ImageWidth);
             CheckError(errorCode);
-            errorCode = Acquisition_Acquire_Image(m_AcqDesc, frameCount, 0, HIS_SEQ_AVERAGE, m_OffsetMap, m_GainMap, m_PixelMap);
+            errorCode = Acquisition_Acquire_Image(m_AcqDesc, 1, 1, HIS_SEQ_ONE_BUFFER, m_OffsetMap, m_GainMap, m_PixelMap);
             CheckError(errorCode);
-            await LoopFramesAsync(frameCount);
+            await LoopFramesAsync();
 
             ImageReady?.Invoke(this, new ImageEventArgs(m_ImageData, m_ImageWidth, m_ImageHeight, m_ImagePitch));
         }
