@@ -139,7 +139,7 @@ namespace XrpadDetector
             CheckError(errorCode);
             errorCode = Acquisition_Acquire_Image(m_AcqDesc, 1, 1, HIS_SEQ_ONE_BUFFER, m_OffsetMap, m_GainMap, m_PixelMap);
             CheckError(errorCode);
-            await LoopFramesAsync();
+            await LoopFramesAsync(1);
 
             ImageReady?.Invoke(this, new ImageEventArgs(m_ImageData, m_ImageWidth, m_ImageHeight, m_ImagePitch));
         }
