@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using XrpadDetector;
 
 namespace XrpadDetectorTest
@@ -13,7 +12,7 @@ namespace XrpadDetectorTest
             if (info != null)
             {
                 Console.WriteLine($"Found detector {info.Name} on {info.IP}");
-                TestDetector(info).Wait();
+                TestDetector(info);
             }
             else
             {
@@ -24,7 +23,7 @@ namespace XrpadDetectorTest
             Console.ReadLine();
         }
 
-        private static async Task TestDetector(DetectorInfo info)
+        private static void TestDetector(DetectorInfo info)
         {
             using (var detector = new Detector(info.Name))
             {
@@ -33,9 +32,9 @@ namespace XrpadDetectorTest
                 detector.SetAedMode(false);
                 detector.SetAcquisitionTime(5000);
 
-                await detector.StartOffsetCalibration(3);
-                await detector.StartGainCalibration(5);
-                await detector.StartAcquisition(5);
+                detector.StartOffsetCalibration(3);
+                detector.StartGainCalibration(5);
+                detector.StartAcquisition(5);
 
                 var batteryStatus = detector.GetBatteryStatus(out int batteryGauge);
                 Console.WriteLine($"Battery status: {batteryStatus} ({batteryGauge}%)");
